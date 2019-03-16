@@ -44,11 +44,19 @@ describe('Routes', () => {
   })
 
   test('add with existing name throws', () => {
-    expect(() => nextRoutes().add('a').add('a')).toThrow()
+    expect(() =>
+      nextRoutes()
+        .add('a')
+        .add('a')
+    ).toThrow()
   })
 
   test('add multiple unnamed routes', () => {
-    expect(nextRoutes().add('/a', 'a').add('/b', 'b').routes.length).toBe(2)
+    expect(
+      nextRoutes()
+        .add('/a', 'a')
+        .add('/b', 'b').routes.length
+    ).toBe(2)
   })
 
   test('page with leading slash', () => {
@@ -60,7 +68,10 @@ describe('Routes', () => {
   })
 
   test('match and merge params into query', () => {
-    const routes = nextRoutes().add('a').add('b', '/:a?/b/:b').add('c')
+    const routes = nextRoutes()
+      .add('a')
+      .add('b', '/:a?/b/:b')
+      .add('c')
     const { query } = routes.match('/b/b?b=x&c=c')
     expect(query).toMatchObject({ b: 'b', c: 'c' })
     expect(query).not.toHaveProperty('a')
@@ -104,7 +115,10 @@ describe('Routes', () => {
   test('with custom Link and Router', () => {
     const CustomLink = () => <div />
     const CustomRouter = {}
-    const { Link, Router } = nextRoutes({ Link: CustomLink, Router: CustomRouter })
+    const { Link, Router } = nextRoutes({
+      Link: CustomLink,
+      Router: CustomRouter
+    })
     expect(renderer.render(<Link />).type).toBe(CustomLink)
     expect(Router).toBe(CustomRouter)
   })

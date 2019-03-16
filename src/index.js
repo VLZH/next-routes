@@ -7,16 +7,13 @@ import NextRouter from 'next/router'
 export default opts => new Routes(opts)
 
 class Routes {
-  constructor ({
-    Link = NextLink,
-    Router = NextRouter
-  } = {}) {
+  constructor({ Link = NextLink, Router = NextRouter } = {}) {
     this.routes = []
     this.Link = this.getLink(Link)
     this.Router = this.getRouter(Router)
   }
 
-  add (name, pattern, page) {
+  add(name, pattern, page) {
     let options
     if (name instanceof Object) {
       options = name
@@ -38,25 +35,28 @@ class Routes {
     return this
   }
 
-  findByName (name) {
+  findByName(name) {
     if (name) {
       return this.routes.filter(route => route.name === name)[0]
     }
   }
 
-  match (url) {
+  match(url) {
     const parsedUrl = parse(url, true)
     const { pathname, query } = parsedUrl
 
-    return this.routes.reduce((result, route) => {
-      if (result.route) return result
-      const params = route.match(pathname)
-      if (!params) return result
-      return { ...result, route, params, query: { ...query, ...params } }
-    }, { query, parsedUrl })
+    return this.routes.reduce(
+      (result, route) => {
+        if (result.route) return result
+        const params = route.match(pathname)
+        if (!params) return result
+        return { ...result, route, params, query: { ...query, ...params } }
+      },
+      { query, parsedUrl }
+    )
   }
 
-  findAndGetUrls (nameOrUrl, params) {
+  findAndGetUrls(nameOrUrl, params) {
     const route = this.findByName(nameOrUrl)
 
     if (route) {
@@ -69,7 +69,7 @@ class Routes {
     }
   }
 
-  getRequestHandler (app, customHandler) {
+  getRequestHandler(app, customHandler) {
     const nextHandler = app.getRequestHandler()
 
     return (req, res) => {
@@ -87,7 +87,7 @@ class Routes {
     }
   }
 
-  getLink (Link) {
+  getLink(Link) {
     const LinkRoutes = props => {
       const { route, params, to, ...newProps } = props
       const nameOrUrl = route || to
@@ -101,9 +101,12 @@ class Routes {
     return LinkRoutes
   }
 
-  getRouter (Router) {
+  getRouter(Router) {
     const wrap = method => (route, params, options) => {
-      const { byName, urls: { as, href } } = this.findAndGetUrls(route, params)
+      const {
+        byName,
+        urls: { as, href }
+      } = this.findAndGetUrls(route, params)
       return Router[method](href, as, byName ? options : params)
     }
 
@@ -115,7 +118,7 @@ class Routes {
 }
 
 class Route {
-  constructor ({ name, pattern, page = name }) {
+  constructor({ name, pattern, page = name }) {
     if (!name && !page) {
       throw new Error(`Missing page to render for route "${pattern}"`)
     }
@@ -123,19 +126,19 @@ class Route {
     this.name = name
     this.pattern = pattern || `/${name}`
     this.page = page.replace(/(^|\/)index$/, '').replace(/^\/?/, '/')
-    this.regex = pathToRegexp(this.pattern, this.keys = [])
+    this.regex = pathToRegexp(this.pattern, (this.keys = []))
     this.keyNames = this.keys.map(key => key.name)
     this.toPath = pathToRegexp.compile(this.pattern)
   }
 
-  match (path) {
+  match(path) {
     const values = this.regex.exec(path)
     if (values) {
       return this.valuesToParams(values.slice(1))
     }
   }
 
-  valuesToParams (values) {
+  valuesToParams(values) {
     return values.reduce((params, val, i) => {
       if (val === undefined) return params
       return Object.assign(params, {
@@ -144,25 +147,29 @@ class Route {
     }, {})
   }
 
-  getHref (params = {}) {
+  getHref(params = {}) {
     return `${this.page}?${toQuerystring(params)}`
   }
 
-  getAs (params = {}) {
+  getAs(params = {}) {
     const as = this.toPath(params) || '/'
     const keys = Object.keys(params)
     const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1)
 
     if (!qsKeys.length) return as
 
-    const qsParams = qsKeys.reduce((qs, key) => Object.assign(qs, {
-      [key]: params[key]
-    }), {})
+    const qsParams = qsKeys.reduce(
+      (qs, key) =>
+        Object.assign(qs, {
+          [key]: params[key]
+        }),
+      {}
+    )
 
     return `${as}?${toQuerystring(qsParams)}`
   }
 
-  getUrls (params) {
+  getUrls(params) {
     const as = this.getAs(params)
     const href = this.getHref(params)
     return { as, href }
@@ -177,7 +184,10 @@ const toQuerystring = obj =>
 
       if (Array.isArray(value)) {
         return value
-          .map(arrayValue => `${encodeURIComponent(key)}=${encodeURIComponent(arrayValue)}`)
+          .map(
+            arrayValue =>
+              `${encodeURIComponent(key)}=${encodeURIComponent(arrayValue)}`
+          )
           .join('&')
       }
       return [encodeURIComponent(key), encodeURIComponent(value)].join('=')

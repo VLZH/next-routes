@@ -4,6 +4,12 @@ import { ComponentType } from 'react'
 import NextLink, { LinkState } from 'next/link'
 import { SingletonRouter, EventChangeOptions } from 'next/router'
 
+export type addRouteOptions = {
+  name?: string
+  pattern?: string
+  page?: string
+}
+
 export type HTTPHandler = (
   request: IncomingMessage,
   response: ServerResponse
@@ -16,6 +22,8 @@ export type RouteParams = {
 export interface LinkProps extends LinkState {
   route: string
   params?: RouteParams
+  exact?: Boolean
+  activeClassName?: string
 }
 
 export interface Router extends SingletonRouter {
@@ -37,9 +45,7 @@ export interface Router extends SingletonRouter {
 
 export interface Registry {
   getRequestHandler(app: Server, custom?: HTTPHandler): HTTPHandler
-  add(name: string, pattern?: string, page?: string): this
-  add(pattern: string, page: string): this
-  add(options: { name: string; pattern?: string; page?: string }): this
+  add(options: addRouteOptions): this
   Link: ComponentType<LinkProps>
   Router: Router
 }
@@ -47,9 +53,7 @@ export interface Registry {
 export class Routes implements Registry {
   new(opts?: { Link?: NextLink; Router?: SingletonRouter }): Routes
   getRequestHandler(app: Server, custom?: HTTPHandler): HTTPHandler
-  add(name: string, pattern?: string, page?: string): this
-  add(pattern: string, page: string): this
-  add(options: { name: string; pattern?: string; page?: string }): this
+  add(options: addRouteOptions): this
   Link: ComponentType<LinkProps>
   Router: Router
 }

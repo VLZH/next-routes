@@ -3,10 +3,10 @@ import * as next from 'next'
 import routes from '../..'
 
 const r = routes()
-  .add('login')
-  .add('home', '/', 'index')
-  .add('/settings', '/users/:id/settings')
-  .add('/example', 'example')
+  .add({ name: 'login' })
+  .add({ name: 'home', pattern: '/', page: 'index' })
+  .add({ name: '/settings', pattern: '/users/:id/settings' })
+  .add({ pattern: '/example', page: 'example' })
   .add({ name: 'objectstyle', pattern: '/cool', page: 'cool' })
 
 export const createServer = () => {

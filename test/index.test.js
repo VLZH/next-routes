@@ -24,23 +24,35 @@ describe('Routes', () => {
   })
 
   test('add with name', () => {
-    setup('a').testRoute({ name: 'a', pattern: '/a', page: '/a' })
+    setup({ name: 'a' }).testRoute({ name: 'a', pattern: '/a', page: '/a' })
   })
 
   test('add with name and pattern', () => {
-    setup('a', '/:a').testRoute({ name: 'a', pattern: '/:a', page: '/a' })
+    setup({ name: 'a', pattern: '/:a' }).testRoute({
+      name: 'a',
+      pattern: '/:a',
+      page: '/a'
+    })
   })
 
   test('add with name, pattern and page', () => {
-    setup('a', '/:a', 'b').testRoute({ name: 'a', pattern: '/:a', page: '/b' })
+    setup({ name: 'a', pattern: '/:a', page: 'b' }).testRoute({
+      name: 'a',
+      pattern: '/:a',
+      page: '/b'
+    })
   })
 
   test('add with pattern and page', () => {
-    setup('/:a', 'b').testRoute({ name: null, pattern: '/:a', page: '/b' })
+    setup({ pattern: '/:a', page: 'b' }).testRoute({
+      name: null,
+      pattern: '/:a',
+      page: '/b'
+    })
   })
 
   test('add with only pattern throws', () => {
-    expect(() => setup('/:a')).toThrow()
+    expect(() => setup({ pattern: '/:a' })).toThrow()
   })
 
   test('add with existing name throws', () => {
@@ -54,62 +66,71 @@ describe('Routes', () => {
   test('add multiple unnamed routes', () => {
     expect(
       nextRoutes()
-        .add('/a', 'a')
-        .add('/b', 'b').routes.length
+        .add({ pattern: '/a', page: 'a' })
+        .add({ pattern: '/b', page: 'b' }).routes.length
     ).toBe(2)
   })
 
   test('page with leading slash', () => {
-    setup('a', '/', '/b').testRoute({ page: '/b' })
+    setup({ name: 'a', pattern: '/', page: '/b' }).testRoute({ page: '/b' })
   })
 
   test('page index becomes /', () => {
-    setup('index', '/').testRoute({ page: '/' })
+    setup({ name: 'index', pattern: '/' }).testRoute({ page: '/' })
   })
 
   test('match and merge params into query', () => {
     const routes = nextRoutes()
-      .add('a')
-      .add('b', '/:a?/b/:b')
-      .add('c')
+      .add({ name: 'a' })
+      .add({ name: 'b', pattern: '/:a?/b/:b' })
+      .add({ name: 'c' })
     const { query } = routes.match('/b/b?b=x&c=c')
     expect(query).toMatchObject({ b: 'b', c: 'c' })
     expect(query).not.toHaveProperty('a')
   })
 
   test('match and merge escaped params', () => {
-    const routes = nextRoutes().add('a', '/a/:b')
+    const routes = nextRoutes().add({ name: 'a', pattern: '/a/:b' })
     const { query } = routes.match('/a/b%20%2F%20b')
     expect(query).toMatchObject({ b: 'b / b' })
     expect(query).not.toHaveProperty('a')
   })
 
   test('generate urls from params', () => {
-    const { route } = setup('a', '/a/:b/:c+')
+    const { route } = setup({ name: 'a', pattern: '/a/:b/:c+' })
     const params = { b: 'b', c: [1, 2], d: 'd' }
     const expected = { as: '/a/b/1/2?d=d', href: '/a?b=b&c=1&c=2&d=d' }
     expect(route.getUrls(params)).toEqual(expected)
-    expect(setup('a').route.getUrls()).toEqual({ as: '/a', href: '/a?' })
+    expect(setup({ name: 'a' }).route.getUrls()).toEqual({
+      as: '/a',
+      href: '/a?'
+    })
   })
 
   test('generate urls with params that need escaping', () => {
-    const { route } = setup('a', '/a/:b')
+    const { route } = setup({ name: 'a', pattern: '/a/:b' })
     const params = { b: 'b b' }
     const expected = { as: '/a/b%20b', href: '/a?b=b%20b' }
     expect(route.getUrls(params)).toEqual(expected)
-    expect(setup('a').route.getUrls()).toEqual({ as: '/a', href: '/a?' })
+    expect(setup({ name: 'a' }).route.getUrls()).toEqual({
+      as: '/a',
+      href: '/a?'
+    })
   })
 
   test('do not pass "null" for params that have null values', () => {
-    const { route } = setup('a', '/a/:b/:c?')
+    const { route } = setup({ name: 'a', pattern: '/a/:b/:c?' })
     const params = { b: 'b', c: null, d: undefined }
     const expected = { as: '/a/b?', href: '/a?b=b' }
     expect(route.getUrls(params)).toEqual(expected)
-    expect(setup('a').route.getUrls()).toEqual({ as: '/a', href: '/a?' })
+    expect(setup({ name: 'a' }).route.getUrls()).toEqual({
+      as: '/a',
+      href: '/a?'
+    })
   })
 
   test('ensure "as" when path match is empty', () => {
-    expect(setup('a', '/:a?').route.getAs()).toEqual('/')
+    expect(setup({ name: 'a', pattern: '/:a?' }).route.getAs()).toEqual('/')
   })
 
   test('with custom Link and Router', () => {
@@ -134,14 +155,14 @@ describe('Request handler', () => {
 
   test('find route and call render', () => {
     const { routes, app, req, res } = setup('/a')
-    const { route, query } = routes.add('a').match('/a')
+    const { route, query } = routes.add({ name: 'a' }).match('/a')
     routes.getRequestHandler(app)(req, res)
     expect(app.render).toBeCalledWith(req, res, route.page, query)
   })
 
   test('find route and call custom handler', () => {
     const { routes, app, req, res } = setup('/a')
-    const { route, query } = routes.add('a').match('/a')
+    const { route, query } = routes.add({ name: 'a' }).match('/a')
     const customHandler = jest.fn()
     const expected = expect.objectContaining({ req, res, route, query })
     routes.getRequestHandler(app, customHandler)(req, res)
@@ -170,27 +191,43 @@ describe('Link', () => {
   }
 
   test('with name and params', () => {
-    const { route, testLink } = setup('a', '/a/:b')
+    const { route, testLink } = setup({ name: 'a', pattern: '/a/:b' })
     testLink({ route: 'a', params: { b: 'b' } }, route.getUrls({ b: 'b' }))
   })
 
   test('with route url', () => {
-    const { routes, route, testLink } = setup('/a/:b', 'a')
+    const { routes, route, testLink } = setup({ pattern: '/a/:b', page: 'a' })
     testLink({ route: '/a/b' }, route.getUrls(routes.match('/a/b').query))
   })
 
   test('with to', () => {
-    const { routes, route, testLink } = setup('/a/:b', 'a')
+    const { routes, route, testLink } = setup({ pattern: '/a/:b', page: 'a' })
     testLink({ to: '/a/b' }, route.getUrls(routes.match('/a/b').query))
   })
 
   test('with route not found', () => {
-    setup('a').testLink({ route: '/b' }, { href: '/b', as: '/b' })
+    setup({ name: 'a' }).testLink({ route: '/b' }, { href: '/b', as: '/b' })
   })
 
   test('without route', () => {
-    setup('a').testLink({ href: '/' }, { href: '/' })
+    setup({ name: 'a' }).testLink({ href: '/' }, { href: '/' })
   })
+
+  test('with empty params', () => {
+    expect.assertions(1)
+    try {
+      setup({ name: 'c', pattern: '/c/:b' }).testLink(
+        { route: 'c', params: {} },
+        { as: '/c/b', href: '/c?b=b' }
+      )
+    } catch (e) {
+      expect(e instanceof Error).toEqual(true)
+    }
+  })
+
+  //test('with exact=true', () => {
+  //setup('/a/:b').testLink({ exact: false, route: 'a' }, { active: true })
+  //})
 })
 
 const routerMethods = ['push', 'replace', 'prefetch']
@@ -209,19 +246,19 @@ describe(`Router ${routerMethods.join(', ')}`, () => {
   }
 
   test('with name and params', () => {
-    const { route, testMethods } = setup('a', '/a/:b')
+    const { route, testMethods } = setup({ name: 'a', pattern: '/a/:b' })
     const { as, href } = route.getUrls({ b: 'b' })
     testMethods(['a', { b: 'b' }, {}], [href, as, {}])
   })
 
   test('with route url', () => {
-    const { routes, testMethods } = setup('/a', 'a')
+    const { routes, testMethods } = setup({ pattern: '/a', page: 'a' })
     const { route, query } = routes.match('/a')
     const { as, href } = route.getUrls(query)
     testMethods(['/a', {}], [href, as, {}])
   })
 
   test('with route not found', () => {
-    setup('a').testMethods(['/b', {}], ['/b', '/b', {}])
+    setup({ name: 'a' }).testMethods(['/b', {}], ['/b', '/b', {}])
   })
 })

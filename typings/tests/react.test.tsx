@@ -8,7 +8,7 @@ import App from './react'
  */
 afterEach(cleanup)
 
-test('renders without crashing', () => {
+it('renders without crashing', () => {
   const { container } = render(<App />)
   expect(container).toMatchSnapshot()
 })

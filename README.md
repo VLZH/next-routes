@@ -1,6 +1,6 @@
 # Dynamic Routes for Next.js
 
-**NOTICE: This is a fork of [fridays/next-routes](https://github.com/fridays/next-routes). This will continue to be maintained until [fridays/next-routes](https://github.com/fridays/next-routes) becomes maintained again. See https://github.com/fridays/next-routes/issues/244.**
+**NOTICE: This is a fork of [@yolkai/next-routes](https://github.com/@yolkai/next-routes).**
 
 [![npm (scoped)](https://img.shields.io/npm/v/@yolkai/next-routes.svg)](https://www.npmjs.com/package/@yolkai/next-routes) [![Build Status](https://travis-ci.com/elliottsj/next-routes.svg?branch=master)](https://travis-ci.com/elliottsj/next-routes)
 
@@ -15,23 +15,19 @@ Easy to use universal dynamic routes for [Next.js](https://github.com/zeit/next.
 Install:
 
 ```bash
-npm install @yolkai/next-routes --save
+npm install @VLZH/next-routes --save
 ```
 
 Create `routes.js` inside your project:
 
 ```javascript
-const nextRoutes = require('@yolkai/next-routes').default
+const nextRoutes = require('@VLZH/next-routes').default
 
 // Or, if using ES modules:
-// import nextRoutes from '@yolkai/next-routes'
+// import nextRoutes from '@VLZH/next-routes'
 
                                                     // Name   Page      Pattern
 const routes = nextRoutes()                          // ----   ----      -----
-  .add('about')                                     // about  about     /about
-  .add('blog', '/blog/:slug')                       // blog   blog      /blog/:slug
-  .add('user', '/user/:id', 'profile')              // user   profile   /user/:id
-  .add('/:noname/:lang(en|es)/:wow+', 'complex')    // (none) complex   /:noname/:lang(en|es)/:wow+
   .add({name: 'beta', pattern: '/v3', page: 'v3'})  // beta   v3        /v3
 
 module.exports = routes
@@ -44,10 +40,9 @@ This file is used both on the server and the client.
 
 API:
 
-- `nextRoutes.add([name], pattern = /name, page = name)`
-- `nextRoutes.add(object)`
+- `nextRoutes.add({name: 'name', pattern: '/name', page: 'name'})`
 
-Arguments:
+Options:
 
 - `name` - Route name
 - `pattern` - Route pattern (like express, see [path-to-regexp](https://github.com/pillarjs/path-to-regexp))
@@ -193,7 +188,7 @@ It generates the URLs and calls `next/router`
 Optionally you can provide custom `Link` and `Router` objects, for example:
 
 ```javascript
-const nextRoutes = require('@yolkai/next-routes').default
+const nextRoutes = require('@VLZH/next-routes').default
 
 const routes = nextRoutes({
   Link: require('./my/link')

@@ -1,7 +1,8 @@
 import React from 'react'
 import { parse } from 'url'
 import NextLink from 'next/link'
-import NextRouter from 'next/router'
+import cn from 'classnames'
+import NextRouter, { withRouter } from 'next/router'
 import Route from './Route'
 
 export default class Routes {
@@ -98,15 +99,53 @@ export default class Routes {
    */
   getLink(Link) {
     const LinkRoutes = props => {
-      const { route, params, to, ...newProps } = props
+      const {
+        route,
+        params,
+        to,
+        //
+        router,
+        exact = true,
+        activeClassName = 'active',
+        children,
+        ...newProps
+      } = props
       const nameOrUrl = route || to
+      let active = false
+
       if (nameOrUrl) {
-        const matched_route = this.findAndGetUrls(nameOrUrl, params)
-        Object.assign(newProps, matched_route.urls)
+        const { urls, route } = this.findAndGetUrls(nameOrUrl, params)
+        Object.assign(newProps, urls)
+
+        // check matching of current pathname in browser address and this link
+        if (router) {
+          if (exact) {
+            active = route.getAs(params) === router.asPath
+          } else {
+            active = !!route.match(router.asPath)
+          }
+        }
       }
-      return <Link {...newProps} />
+
+      // get new className for children element
+      const className = cn(children.props.className, {
+        [activeClassName]: active
+      })
+
+      const _children = React.cloneElement(
+        children,
+        /* eslint-disable */
+        className
+          ? {
+              className
+            }
+          : {}
+        /* eslint-enable */
+      )
+
+      return <Link {...newProps}>{_children}</Link>
     }
-    return LinkRoutes
+    return withRouter(LinkRoutes)
   }
 
   /**

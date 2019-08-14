@@ -1,5 +1,5 @@
 {
-  "name": "@VLZH/next-routes",
+  "name": "@vlzh/next-routes",
   "version": "4.0.0",
   "description": "Easy to use universal dynamic routes for Next.js",
   "repository": {
@@ -17,13 +17,13 @@
   ],
   "scripts": {
     "lint": "eslint ./",
-    "build": "del dist/* && babel src -d dist",
-    "prepublishOnly": "npm run test",
-    "pretest": "npm run lint && npm run build",
-    "test": "npm run testOnly && npm run testTypings",
-    "testOnly": "jest",
-    "testTypings": "tsc --project ./typings/tests",
-    "dev": "concurrently -k 'npm run build -- -w' 'npm run testOnly -- --watch'"
+    "build": "del dist/* && yarn babel src -d dist",
+    "prepublishOnly": "yarn test",
+    "pretest": "yarn lint && yarn build",
+    "test": "yarn testOnly && yarn testTypings",
+    "testOnly": "yarn jest",
+    "testTypings": "yarn tsc --project ./typings/tests",
+    "dev": "concurrently -k 'yarn build -- -w' 'yarn testOnly -- --watch'"
   },
   "standard": {
     "parser": "babel-eslint"
@@ -49,6 +49,8 @@
     "babel-jest": "24.0.0",
     "concurrently": "4.1.0",
     "del-cli": "1.1.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^5.15.2",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-import": "^2.16.0",

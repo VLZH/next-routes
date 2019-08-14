@@ -15,16 +15,16 @@ Easy to use universal dynamic routes for [Next.js](https://github.com/zeit/next.
 Install:
 
 ```bash
-npm install @VLZH/next-routes --save
+npm install @vlzh/next-routes --save
 ```
 
 Create `routes.js` inside your project:
 
 ```javascript
-const nextRoutes = require('@VLZH/next-routes').default
+const nextRoutes = require('@vlzh/next-routes').default
 
 // Or, if using ES modules:
-// import nextRoutes from '@VLZH/next-routes'
+// import nextRoutes from '@vlzh/next-routes'
 
                                                     // Name   Page      Pattern
 const routes = nextRoutes()                          // ----   ----      -----
@@ -188,7 +188,7 @@ It generates the URLs and calls `next/router`
 Optionally you can provide custom `Link` and `Router` objects, for example:
 
 ```javascript
-const nextRoutes = require('@VLZH/next-routes').default
+const nextRoutes = require('@vlzh/next-routes').default
 
 const routes = nextRoutes({
   Link: require('./my/link')

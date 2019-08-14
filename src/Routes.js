@@ -15,7 +15,16 @@ export default class Routes {
   /**
    * Add new route
    */
-  add({ name = null, pattern, page }) {
+  add({ name, pattern, page }) {
+    if (![name, pattern, page].every(v => !!v)) {
+      const args = { name, pattern, page }
+      const undefined_values = Object.keys(args).filter(k => !args[k])
+      throw new Error(
+        `Every value is required; Undefined values: [${undefined_values.concat(
+          ','
+        )}]`
+      )
+    }
     if (this.findByName(name)) {
       throw new Error(`Route "${name}" already exists`)
     }
@@ -98,7 +107,7 @@ export default class Routes {
    * Create wrapper-component for next/link
    */
   getLink(Link) {
-    const LinkRoutes = props => {
+    let LinkRoutes = props => {
       const {
         route,
         params,
@@ -112,6 +121,10 @@ export default class Routes {
       } = props
       const nameOrUrl = route || to
       let active = false
+
+      if (!children) {
+        throw new Error('children props for Link is required')
+      }
 
       if (nameOrUrl) {
         const { urls, route } = this.findAndGetUrls(nameOrUrl, params)
@@ -145,6 +158,7 @@ export default class Routes {
 
       return <Link {...newProps}>{_children}</Link>
     }
+    LinkRoutes.displayName = 'LinkRoutes'
     return withRouter(LinkRoutes)
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@vlzh/next-routes",
-  "version": "4.0.0",
+  "version": "4.0.2",
   "description": "Easy to use universal dynamic routes for Next.js",
   "repository": {
     "type": "git",

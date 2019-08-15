@@ -2,7 +2,7 @@
 
 **NOTICE: This is a fork of [@yolkai/next-routes](https://github.com/@yolkai/next-routes).**
 
-[![npm (scoped)](https://img.shields.io/npm/v/@yolkai/next-routes.svg)](https://www.npmjs.com/package/@yolkai/next-routes) [![Build Status](https://travis-ci.com/elliottsj/next-routes.svg?branch=master)](https://travis-ci.com/elliottsj/next-routes)
+[![npm (scoped)](https://img.shields.io/npm/v/@vlzh/next-routes.svg)](https://www.npmjs.com/package/@vlzh/next-routes)
 
 Easy to use universal dynamic routes for [Next.js](https://github.com/zeit/next.js)
 

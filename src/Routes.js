@@ -6,9 +6,13 @@ import NextRouter, { withRouter } from 'next/router'
 import Route from './Route'
 
 export default class Routes {
-  constructor({ Link = NextLink, Router = NextRouter } = {}) {
+  constructor({
+    Link = NextLink,
+    Router = NextRouter,
+    hrefCorrector = v => v
+  } = {}) {
     this.routes = []
-    this.Link = this.getLink(Link)
+    this.Link = this.getLink(Link, hrefCorrector)
     this.Router = this.getRouter(Router)
   }
 
@@ -106,7 +110,7 @@ export default class Routes {
   /**
    * Create wrapper-component for next/link
    */
-  getLink(Link) {
+  getLink(Link, hrefCorrector) {
     let LinkRoutes = props => {
       const {
         route,
@@ -133,9 +137,9 @@ export default class Routes {
         // check matching of current pathname in browser address and this link
         if (router) {
           if (exact) {
-            active = route.getAs(params) === router.asPath
+            active = route.getAs(params) === hrefCorrector(router.asPath)
           } else {
-            active = !!route.match(router.asPath)
+            active = !!route.match(hrefCorrector(router.asPath))
           }
         }
       }

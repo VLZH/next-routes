@@ -147,6 +147,8 @@ describe('Routes', () => {
     ).toBe(CustomLink)
     expect(Router).toBe(CustomRouter)
   })
+
+  test('with hrefCorrector', () => {})
 })
 
 describe('Request handler', () => {

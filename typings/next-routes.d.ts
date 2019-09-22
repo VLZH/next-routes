@@ -61,4 +61,5 @@ export class Routes implements Registry {
 export default function routes(opts?: {
   Link?: NextLink
   Router?: SingletonRouter
+  hrefCorrector?: (href: string) => string
 }): Routes

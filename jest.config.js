@@ -21,4 +21,4 @@ module.exports = {
   transform: {
     '^.+\\.(ts|tsx|js)$': require.resolve('./jest/babelTransformer')
   }
-}
+};

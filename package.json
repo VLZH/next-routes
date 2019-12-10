@@ -1,6 +1,6 @@
 {
   "name": "@vlzh/next-routes",
-  "version": "4.0.2",
+  "version": "5.0.0",
   "description": "Easy to use universal dynamic routes for Next.js",
   "repository": {
     "type": "git",
@@ -9,64 +9,62 @@
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist",
-  "typings": "typings/next-routes.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "typings"
   ],
   "scripts": {
     "lint": "eslint ./",
-    "build": "del dist/* && yarn babel src -d dist",
+    "build": "rm -rf dist && yarn tsc",
     "prepublishOnly": "yarn test",
-    "pretest": "yarn lint && yarn build",
-    "test": "yarn testOnly && yarn testTypings",
-    "testOnly": "yarn jest",
-    "testTypings": "yarn tsc --project ./typings/tests",
-    "dev": "concurrently -k 'yarn build -- -w' 'yarn testOnly -- --watch'"
-  },
-  "standard": {
-    "parser": "babel-eslint"
+    "pretest": "yarn build",
+    "test": "yarn jest"
   },
   "dependencies": {
     "classnames": "^2.2.6",
-    "path-to-regexp": "^3.0.0"
+    "path-to-regexp": "^6.1.0"
   },
   "peerDependencies": {
-    "next": ">=2",
-    "react": "^15.4.2 || ^16"
+    "next": ">=9",
+    "react": "^16"
   },
   "devDependencies": {
-    "@babel/cli": "7.2.3",
-    "@babel/core": "7.2.2",
-    "@babel/preset-env": "7.3.1",
-    "@types/jest": "23.3.13",
-    "@types/next": "7.0.8",
-    "@types/node": "10.12.20",
+    "@babel/cli": "7.7.5",
+    "@babel/core": "7.7.5",
+    "@babel/preset-env": "7.7.6",
+    "@types/classnames": "^2.2.9",
+    "@types/jest": "24.0.23",
+    "@types/next": "9.0.0",
+    "@types/node": "12.12.16",
+    "@types/react": "^16.9.16",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
     "@zeit/next-typescript": "1.1.1",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "24.0.0",
-    "concurrently": "4.1.0",
-    "del-cli": "1.1.0",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "24.9.0",
+    "concurrently": "5.0.1",
+    "del-cli": "3.0.0",
     "enzyme": "^3.10.0",
-    "enzyme-adapter-react-16": "^1.14.0",
-    "eslint": "^5.15.2",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.12.4",
-    "husky": "^1.3.1",
-    "jest": "24.0.0",
-    "next": "7.0.2",
-    "prettier": "^1.16.4",
-    "prop-types": "15.6.2",
-    "react": "16.7.0",
-    "react-dom": "16.7.0",
-    "react-test-renderer": "16.7.0",
-    "react-testing-library": "5.4.4",
-    "standard": "12.0.1",
-    "typescript": "3.3.1"
+    "enzyme-adapter-react-16": "^1.15.1",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
+    "husky": "^3.1.0",
+    "jest": "24.9.0",
+    "next": "^9.1.5",
+    "prettier": "^1.19.1",
+    "prop-types": "15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "16.12.0",
+    "react-test-renderer": "16.12.0",
+    "react-testing-library": "8.0.1",
+    "standard": "14.3.1",
+    "typescript": "^3.7.3"
   },
   "author": "VLZH",
   "license": "MIT",

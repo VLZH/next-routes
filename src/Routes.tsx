@@ -1,4 +1,3 @@
-import CN from 'classnames';
 import Server from 'next/dist/next-server/server/next-server';
 import NextLink, { LinkProps } from 'next/link';
 import NextRouter, { SingletonRouter, useRouter } from 'next/router';
@@ -173,9 +172,8 @@ export default class Routes {
       }
 
       // get new className for children element
-      const className = CN(children.props.className, {
-        [activeClassName]: active
-      });
+      const className =
+        children.props.className + (active ? activeClassName : '');
 
       const _children = React.cloneElement(
         children,

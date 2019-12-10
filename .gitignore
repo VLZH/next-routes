@@ -1,11 +1,14 @@
 # build
 dist
+*_cache_cjs
+*_cache_esm
 
 # example
 example
 
 # dependencies
 node_modules
+_node_modules
 
 # logs
 npm-debug.log

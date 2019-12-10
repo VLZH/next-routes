@@ -1,4 +1,5 @@
-import { pathToRegexp, Key, PathFunction, compile } from 'path-to-regexp';
+import { compile, Key, PathFunction, pathToRegexp } from 'path-to-regexp';
+import { InvalidRouteParameters } from './exceptions';
 import {
   IncommingParams,
   MatchedParams,
@@ -65,8 +66,12 @@ export default class Route {
    * Get url for address line in browser like: '/a/:param/?param=1'
    */
   getAs(params: IncommingParams = {}): string {
-    // get pathname by params
-    const as = this.toPath(params) || '/';
+    let as;
+    try {
+      as = this.toPath(params) || '/';
+    } catch (error) {
+      throw new InvalidRouteParameters(this, params);
+    }
     // filter params only declared in path-regexp
     const keys = Object.keys(params);
     const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1);

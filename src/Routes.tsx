@@ -4,6 +4,7 @@ import NextLink, { LinkProps } from 'next/link';
 import NextRouter, { SingletonRouter, useRouter } from 'next/router';
 import React from 'react';
 import { parse } from 'url';
+import { InvalidParameterError } from './exceptions';
 import {
   CustomHandler,
   FindRouteResult,
@@ -19,12 +20,6 @@ interface RoutesRouter {
   pushRoute: () => void;
   replaceRoute: () => void;
   prefetchRoute: () => void;
-}
-
-class InvalidParameterError extends Error {
-  constructor(parameters: string[]) {
-    super(`You do not define parameter: [${parameters.concat(', ')}]`);
-  }
 }
 
 export default class Routes {

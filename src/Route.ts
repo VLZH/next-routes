@@ -1,11 +1,6 @@
 import { compile, Key, PathFunction, pathToRegexp } from 'path-to-regexp';
-import { InvalidRouteParameters } from './exceptions';
-import {
-  IncommingParams,
-  MatchedParams,
-  RouteOptions,
-  Urls
-} from './interfaces';
+import { InvalidRouteParametersError } from './exceptions';
+import { Params, RouteOptions, Urls } from './interfaces';
 import { toQuerystring } from './utils';
 
 export default class Route {
@@ -33,7 +28,7 @@ export default class Route {
    * Check path for match and on success match return object:
    * { params: {...params} }
    */
-  match(path: string): { params: MatchedParams } | undefined {
+  match(path: string): { params: Params } | undefined {
     const values = this.regex.exec(path);
     if (values) {
       const params = this.valuesToParams(values.slice(1));
@@ -46,10 +41,10 @@ export default class Route {
   /**
    * Convert values from regexp match to params
    */
-  valuesToParams(values: string[]): MatchedParams {
+  valuesToParams(values: string[]): Params {
     return values.reduce((params, val, i) => {
       if (val === undefined) return params;
-      return (Object as any).assign(params, {
+      return Object.assign(params, {
         [this.keys[i].name]: decodeURIComponent(val)
       });
     }, {});
@@ -58,30 +53,30 @@ export default class Route {
   /*
    * Get url for next.js like: '/somepage?param=1'
    */
-  getHref(params: IncommingParams = {}): string {
-    return `${this.page}?${toQuerystring(params)}`;
+  getHref(incommingParams: Params = {}): string {
+    return `${this.page}?${toQuerystring(incommingParams)}`;
   }
 
   /*
    * Get url for address line in browser like: '/a/:param/?param=1'
    */
-  getAs(params: IncommingParams = {}): string {
+  getAs(incommingParams: Params = {}): string {
     let as;
     try {
-      as = this.toPath(params) || '/';
+      as = this.toPath(incommingParams) || '/';
     } catch (error) {
-      throw new InvalidRouteParameters(this, params);
+      throw new InvalidRouteParametersError(this, incommingParams);
     }
     // filter params only declared in path-regexp
-    const keys = Object.keys(params);
+    const keys = Object.keys(incommingParams);
     const qsKeys = keys.filter(key => this.keyNames.indexOf(key) === -1);
 
     if (!qsKeys.length) return as;
 
     const qsParams = qsKeys.reduce(
       (qs, key) =>
-        (Object as any).assign(qs, {
-          [key]: params[key]
+        Object.assign(qs, {
+          [key]: incommingParams[key]
         }),
       {}
     );
@@ -91,11 +86,11 @@ export default class Route {
 
   /**
    * Get Urls for this route by parameters
-   * @param params IncommingParams
+   * @param incommingParams IncommingParams
    */
-  getUrls(params?: IncommingParams): Urls {
-    const as = this.getAs(params);
-    const href = this.getHref(params);
+  getUrls(incommingParams?: Params): Urls {
+    const as = this.getAs(incommingParams);
+    const href = this.getHref(incommingParams);
     return { as, href };
   }
 }

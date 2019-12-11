@@ -18,11 +18,7 @@ export interface RouteOptions {
   page: string;
 }
 
-export interface MatchedParams {
-  [key: string]: string;
-}
-
-export interface IncommingParams {
+export interface Params {
   [key: string]: string;
 }
 
@@ -34,7 +30,7 @@ export interface Urls {
 export interface MatchResult {
   route?: Route;
   parsedUrl: UrlWithParsedQuery;
-  params: MatchedParams;
+  params: Params;
   query: ParsedUrlQuery;
 }
 

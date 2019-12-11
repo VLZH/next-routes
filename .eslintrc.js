@@ -7,7 +7,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
-    'prettier',
+    'plugin:prettier/recommended',
     'plugin:@typescript-eslint/eslint-plugin/recommended'
   ],
   globals: {
@@ -25,7 +25,6 @@ module.exports = {
   },
   plugins: ['react', 'prettier', '@typescript-eslint/eslint-plugin'],
   rules: {
-    indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],

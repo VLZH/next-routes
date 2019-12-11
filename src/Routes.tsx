@@ -3,23 +3,29 @@ import NextLink, { LinkProps } from 'next/link';
 import NextRouter, { SingletonRouter, useRouter } from 'next/router';
 import React from 'react';
 import { parse } from 'url';
-import { InvalidParameterError } from './exceptions';
+import {
+  InvalidParameterError,
+  UndefinedRouteOrHrefError,
+  UndefinedChildrenError
+} from './exceptions';
 import {
   CustomHandler,
   FindRouteResult,
   HrefCorrector,
-  IncommingParams,
+  Params,
   MatchResult,
   RouteOptions,
   RouterOptions
 } from './interfaces';
 import Route from './Route';
 
-interface RoutesRouter {
+type RoutesParams = {
   pushRoute: () => void;
   replaceRoute: () => void;
   prefetchRoute: () => void;
-}
+};
+
+type RoutesRouter = SingletonRouter & RoutesParams;
 
 export default class Routes {
   routes: Route[];
@@ -96,15 +102,16 @@ export default class Routes {
 
   /**
    * Find route by name and return FindRouteResult ({route: Route, urls: {href: string, as: string}})
+   * When match is unsuccessfuly we just return nameOrUrl as 'href' and 'as'
    */
-  findAndGetUrls(nameOrUrl: string, params: IncommingParams): FindRouteResult {
+  findAndGetUrls(nameOrUrl: string, params: Params): FindRouteResult {
     const route = this.findByName(nameOrUrl);
     if (route) {
       return { route, urls: route.getUrls(params), byName: true };
     } else {
       const mr = this.match(nameOrUrl);
       const { route, query } = mr;
-      const href = route ? route.getHref(query as IncommingParams) : nameOrUrl;
+      const href = route ? route.getHref(query as Params) : nameOrUrl;
       const urls = { href, as: nameOrUrl };
       return { route, urls, byName: false };
     }
@@ -134,7 +141,7 @@ export default class Routes {
     interface LinkRoutesProps extends LinkProps {
       route: string;
       to: string;
-      params: IncommingParams;
+      params: Params;
       exact: object;
       activeClassName: string;
       children: any;
@@ -155,12 +162,16 @@ export default class Routes {
       let active = false;
 
       if (!children) {
-        throw new Error('children props for Link is required');
+        throw new UndefinedChildrenError();
+      }
+
+      if (!nameOrUrl && !newProps.href) {
+        throw new UndefinedRouteOrHrefError(nameOrUrl, newProps.href, params);
       }
 
       if (nameOrUrl) {
         const { urls, route } = this.findAndGetUrls(nameOrUrl, params);
-        (Object as any).assign(newProps, urls);
+        Object.assign(newProps, urls);
         // check matching of current pathname in browser address and this link
         if (route) {
           if (exact) {
@@ -177,13 +188,11 @@ export default class Routes {
 
       const _children = React.cloneElement(
         children,
-        /* eslint-disable */
         className
           ? {
               className
             }
           : {}
-        /* eslint-enable */
       );
 
       return <Link {...newProps}>{_children}</Link>;
@@ -195,12 +204,12 @@ export default class Routes {
   /**
    * Create wrapped router
    */
-  getRouter(Router: SingletonRouter) {
+  getRouter(Router: SingletonRouter): RoutesRouter {
     const wrap = (method: string) => (
       route: string,
-      params: IncommingParams,
+      params: Params,
       options?: {}
-    ): RoutesRouter => {
+    ) => {
       const fr = this.findAndGetUrls(route, params);
       const {
         byName,
@@ -208,10 +217,13 @@ export default class Routes {
       } = fr as FindRouteResult;
       return (Router as any)[method](href, as, byName ? options : params);
     };
+    const router = {
+      ...Router,
+      pushRoute: wrap('push'),
+      replaceRoute: wrap('replace'),
+      prefetchRoute: wrap('prefetch')
+    } as RoutesRouter;
 
-    (Router as any).pushRoute = wrap('push');
-    (Router as any).replaceRoute = wrap('replace');
-    (Router as any).prefetchRoute = wrap('prefetch');
-    return Router;
+    return router;
   }
 }

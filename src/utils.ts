@@ -1,9 +1,9 @@
-import { IncommingParams } from './interfaces';
+import { Params } from './interfaces';
 
 /**
  * Serialize params to querystring
  */
-export const toQuerystring = (obj: IncommingParams): string =>
+export const toQuerystring = (obj: Params): string =>
   Object.keys(obj)
     .filter(key => obj[key] !== null && obj[key] !== undefined)
     .map(key => {

@@ -2,20 +2,20 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { shallow, configure } from 'enzyme';
-import nextRoutes from '..';
+import nextRoutes from '../dist';
 import Adapter from 'enzyme-adapter-react-16';
 
 configure({ adapter: new Adapter() });
 
-const setupRoute = (...args) => {
-  const routes = nextRoutes().add(...args);
+const setupRoute = (args: any) => {
+  const routes = nextRoutes().add(args);
   const route = routes.routes[routes.routes.length - 1];
   return { routes, route };
 };
 
 describe('Routes', () => {
-  const setup = (...args) => {
-    const { routes, route } = setupRoute(...args);
+  const setup = (args) => {
+    const { routes, route } = setupRoute(args);
     const testRoute = expected => expect(route).toMatchObject(expected);
     return { routes, route, testRoute };
   };
@@ -88,7 +88,7 @@ describe('Routes', () => {
     const { route } = setup({ name: 'a', pattern: '/a/:b/:c+', page: 'a' });
     const params = { b: 'b', c: [1, 2], d: 'd' };
     const expected = { as: '/a/b/1/2?d=d', href: '/a?b=b&c=1&c=2&d=d' };
-    expect(route.getUrls(params)).toEqual(expected);
+    expect(route.getUrls(params as any)).toEqual(expected);
     expect(
       setup({ name: 'a', pattern: '/a', page: 'a' }).route.getUrls()
     ).toEqual({
@@ -133,8 +133,8 @@ describe('Routes', () => {
     const CustomLink = () => <div />;
     const CustomRouter = {};
     const { Link, Router } = nextRoutes({
-      Link: CustomLink,
-      Router: CustomRouter
+      Link: CustomLink as any,
+      Router: CustomLink as any
     });
     expect(
       shallow(

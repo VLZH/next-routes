@@ -93,7 +93,7 @@ export default class Route {
    * Get Urls for this route by parameters
    * @param params IncommingParams
    */
-  getUrls(params: IncommingParams): Urls {
+  getUrls(params?: IncommingParams): Urls {
     const as = this.getAs(params);
     const href = this.getHref(params);
     return { as, href };

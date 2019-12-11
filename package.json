@@ -12,15 +12,10 @@
   "main": "dist/index.js",
   "module": "dist/next-routers.esm.js",
   "typings": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "typings"
-  ],
   "scripts": {
     "lint": "tsdx lint",
     "build": "rm -rf dist && tsdx build",
     "watch": "tsdx watch",
-    "prepublishOnly": "yarn test",
     "pretest": "yarn build",
     "test": "tsdx test"
   },

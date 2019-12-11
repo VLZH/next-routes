@@ -29,7 +29,7 @@ export default class Routes {
   constructor({
     Link = NextLink,
     Router = NextRouter,
-    hrefCorrector = v => v
+    hrefCorrector = (v: any) => v
   }: RouterOptions = {}) {
     this.routes = [];
     this.Link = this.getLink(Link, hrefCorrector);

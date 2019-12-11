@@ -1,0 +1,15 @@
+# build
+*_cache_cjs
+*_cache_esm
+
+# example
+example
+
+# dependencies
+node_modules
+
+# logs
+npm-debug.log
+
+# coverage
+coverage

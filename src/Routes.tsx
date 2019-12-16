@@ -183,8 +183,9 @@ export default class Routes {
       }
 
       // get new className for children element
-      const className =
-        children.props.className + (active ? activeClassName : '');
+      const className = `${children.props.className || ''} ${
+        active ? activeClassName : ''
+      }`;
 
       const _children = React.cloneElement(
         children,

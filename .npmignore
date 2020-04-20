@@ -7,9 +7,11 @@ example
 
 # dependencies
 node_modules
+_node_modules
 
 # logs
 npm-debug.log
+yarn-error.log
 
 # coverage
 coverage

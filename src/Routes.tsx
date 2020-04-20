@@ -15,22 +15,16 @@ import {
   Params,
   MatchResult,
   RouteOptions,
-  RouterOptions
+  RouterOptions,
+  RoutesRouter,
+  RoutesRouteMethod
 } from './interfaces';
 import Route from './Route';
-
-type RoutesParams = {
-  pushRoute: () => void;
-  replaceRoute: () => void;
-  prefetchRoute: () => void;
-};
-
-type RoutesRouter = SingletonRouter & RoutesParams;
 
 export default class Routes {
   routes: Route[];
   Link: typeof NextLink;
-  Router = NextRouter;
+  Router: RoutesRouter;
 
   constructor({
     Link = NextLink,
@@ -206,10 +200,10 @@ export default class Routes {
    * Create wrapped router
    */
   getRouter(Router: SingletonRouter): RoutesRouter {
-    const wrap = (method: string) => (
+    const wrap = (method: string): RoutesRouteMethod => (
       route: string,
       params: Params,
-      options?: {}
+      options?: object
     ) => {
       const fr = this.findAndGetUrls(route, params);
       const {

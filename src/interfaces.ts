@@ -6,6 +6,20 @@ import { UrlWithParsedQuery } from 'url';
 
 export type HrefCorrector = (href: string) => string;
 
+export type RoutesRouteMethod = (
+  route: string,
+  params: Params,
+  options?: object
+) => any;
+
+export type RoutesParams = {
+  pushRoute: RoutesRouteMethod;
+  replaceRoute: RoutesRouteMethod;
+  prefetchRoute: RoutesRouteMethod;
+};
+
+export type RoutesRouter = SingletonRouter & RoutesParams;
+
 export interface RouterOptions {
   Link?: typeof Link;
   Router?: SingletonRouter;

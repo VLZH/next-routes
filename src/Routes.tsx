@@ -21,9 +21,20 @@ import {
 } from './interfaces';
 import Route from './Route';
 
+interface LinkRoutesProps extends Partial<LinkProps> {
+  route?: string;
+  to?: string;
+  params?: Params;
+  exact?: object;
+  activeClassName?: string;
+  children?: any;
+}
+
+type RoutesNextLink = React.FC<LinkRoutesProps>;
+
 export default class Routes {
   routes: Route[];
-  Link: typeof NextLink;
+  Link: RoutesNextLink;
   Router: RoutesRouter;
 
   constructor({
@@ -98,7 +109,7 @@ export default class Routes {
    * Find route by name and return FindRouteResult ({route: Route, urls: {href: string, as: string}})
    * When match is unsuccessfuly we just return nameOrUrl as 'href' and 'as'
    */
-  findAndGetUrls(nameOrUrl: string, params: Params): FindRouteResult {
+  findAndGetUrls(nameOrUrl: string, params?: Params): FindRouteResult {
     const route = this.findByName(nameOrUrl);
     if (route) {
       return { route, urls: route.getUrls(params), byName: true };
@@ -131,15 +142,7 @@ export default class Routes {
   /**
    * Create wrapper-component for next/link
    */
-  getLink(Link: typeof NextLink, hrefCorrector: HrefCorrector): any {
-    interface LinkRoutesProps extends LinkProps {
-      route: string;
-      to: string;
-      params: Params;
-      exact: object;
-      activeClassName: string;
-      children: any;
-    }
+  getLink(Link: typeof NextLink, hrefCorrector: HrefCorrector): RoutesNextLink {
     const LinkRoutes: React.FC<LinkRoutesProps> = (props: LinkRoutesProps) => {
       const {
         route,
@@ -190,7 +193,7 @@ export default class Routes {
           : {}
       );
 
-      return <Link {...newProps}>{_children}</Link>;
+      return <Link {...(newProps as LinkProps)}>{_children}</Link>;
     };
     (LinkRoutes as any).displayName = 'LinkRoutes';
     return LinkRoutes;

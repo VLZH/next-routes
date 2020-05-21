@@ -21,13 +21,13 @@ npm install @vlzh/next-routes --save
 Create `routes.js` inside your project:
 
 ```javascript
-const nextRoutes = require('@vlzh/next-routes').default
+const newRoutes = require('@vlzh/next-routes').newRoutes
 
 // Or, if using ES modules:
-// import nextRoutes from '@vlzh/next-routes'
+// import {newRoutes} from '@vlzh/next-routes'
 
                                                     // Name   Page      Pattern
-const routes = nextRoutes()                          // ----   ----      -----
+const routes = newRoutes()                          // ----   ----      -----
   .add({name: 'beta', pattern: '/v3', page: 'v3'})  // beta   v3        /v3
 
 module.exports = routes
